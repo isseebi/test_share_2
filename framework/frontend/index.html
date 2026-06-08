@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Architecture AI Agent Interface</title>
+    <!-- Outfit & Inter Fonts from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom styling -->
+    <link rel="stylesheet" href="/css/style.css?v=2">
+</head>
+
+<body class="dark-theme">
+    <div class="app-container">
+
+        <!-- Left Sidebar: Session Management -->
+        <aside class="sidebar-left">
+            <div class="sidebar-header">
+                <div class="app-logo">
+                    <i class="fa-solid fa-robot logo-icon"></i>
+                    <span>ServoBot IA さーぼぼっと えーあい</span>
+                </div>
+            </div>
+            <button id="new-chat-btn" class="btn btn-primary btn-new-chat">
+                <i class="fa-solid fa-plus"></i> New Chat
+            </button>
+            <div class="sessions-list-container">
+                <h3>Active Sessions</h3>
+                <ul id="sessions-list" class="sessions-list">
+                    <!-- Session items will be dynamically generated -->
+                </ul>
+            </div>
+            <div class="sidebar-footer">
+                <div class="clean-arch-badge">
+                    <i class="fa-solid fa-shield-halved"></i> Clean Architecture
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center Layout: Chat Window -->
+        <main class="chat-main">
+            <header class="chat-header">
+                <div class="chat-title-info">
+                    <h2 id="active-session-title">Select or Create a Chat</h2>
+                    <span id="active-session-id" class="session-id-sub">Session ID: --</span>
+                </div>
+                <div class="model-badge">
+                    <span class="pulse-indicator"></span>
+                    <span id="model-name-display">LangGraph Agent</span>
+                </div>
+            </header>
+
+            <div id="messages-container" class="messages-container">
+                <!-- Message items will be dynamically generated -->
+                <div class="welcome-screen">
+                    <i class="fa-solid fa-compass welcome-icon"></i>
+                    <h1>Welcome to ServoBot Agent</h1>
+                    <p>This agent is built using clean architecture boundaries and powered by LangGraph. You can inspect
+                        the step-by-step thinking loop on the right panel.</p>
+
+                </div>
+            </div>
+
+            <footer class="chat-footer">
+                <form id="chat-form" class="chat-form">
+                    <div class="input-wrapper">
+                        <input type="text" id="chat-input" placeholder="Ask the agent anything..." autocomplete="off"
+                            disabled>
+                        <button type="submit" id="send-btn" class="send-btn" disabled>
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </form>
+            </footer>
+        </main>
+
+        <!-- Right Sidebar: Agent Brain / LangGraph Node Tracker -->
+        <aside class="sidebar-right">
+            <div class="sidebar-right-header">
+                <h3><i class="fa-solid fa-brain"></i> Agent Brain Trace</h3>
+                <p>LangGraph Execution Steps</p>
+            </div>
+
+            <div id="trace-container" class="trace-container">
+                <div class="trace-placeholder">
+                    <i class="fa-solid fa-route"></i>
+                    <p>Start a conversation to see the agent's real-time thinking process.</p>
+                </div>
+                <!-- Thinking steps will be generated here -->
+            </div>
+        </aside>
+
+    </div>
+    <script src="/js/api_client.js?v=2"></script>
+    <script src="/js/main.js?v=2"></script>
+</body>
+
+</html>

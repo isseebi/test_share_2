@@ -1,0 +1,7 @@
+{
+  "system_name": "Industrial Servo Motor Model XM-430 (User Customized)",
+  "kp": 2.2,
+  "kvp": 1.5,
+  "kvi": 0.6,
+  "notes": "Optimal parameter configuration for user's specific load conditions (500g payload)."
+}
