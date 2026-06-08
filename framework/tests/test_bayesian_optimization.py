@@ -1,13 +1,14 @@
 import json
 import pytest
-from src.features.tools.simulation.infrastructure.calculator import PhysicalPIDSimulator
-from src.features.tools.bayesian_optimization.infrastructure.optuna_optimizer import OptunaBayesianOptimizer
-from src.features.tools.bayesian_optimization.application.optimize_use_case import OptimizePIDParametersUseCase
-from src.features.tools.bayesian_optimization.domain.bayesian_optimization_entities import (
+from src.features.tools.pid_simulation.infrastructure.calculator import PhysicalPIDSimulator
+from src.features.tools.pid_bayesian_optimization.infrastructure.optuna_optimizer import OptunaBayesianOptimizer
+from src.features.tools.pid_bayesian_optimization.application.optimize_use_case import OptimizePIDParametersUseCase
+from src.features.tools.pid_bayesian_optimization.domain.bayesian_optimization_entities import (
     OptimizationBounds,
     OptimizationConfig
 )
-from src.features.tools.bayesian_optimization.interface.bayesian_optimization_tool import BayesianOptimizationTool
+from src.features.tools.pid_bayesian_optimization.interface.bayesian_optimization_tool import BayesianOptimizationTool
+
 
 def test_bayesian_optimization_flow():
     """Verify that Bayesian Optimization runs and finds sub-optimal parameters that improve the PID response."""

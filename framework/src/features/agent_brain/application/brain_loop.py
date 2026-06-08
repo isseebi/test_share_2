@@ -70,7 +70,9 @@ class LangGraphAgentState(TypedDict):
     next_node: str                       # 次に遷移するノード名
     action: Optional[Dict[str, Any]]     # 実行されるツールの情報 (名称、引数)
     response: Optional[str]              # 最終応答テキスト
+    loop_count: int                      # ループ回数（無限ループ防止用リミッター）
     
+
 
 # ==========================================
 # エージェント思考ループ実装 (LangGraph)
@@ -80,9 +82,10 @@ class AgentThinkingLoop:
     """
     LangGraph を使用して、エージェントの推論とツール実行のループを定義・管理するクラス。
     """
-    def __init__(self, llm_client: LLMService, tools: List[AgentTool]):
+    def __init__(self, llm_client: LLMService, tools: List[AgentTool], max_loops: int = 10):
         self.llm_client = llm_client
         self.tools = {tool.name: tool for tool in tools}
+        self.max_loops = max_loops
         self.graph = self._build_graph()
         self._print_graph_structure()
 
@@ -140,7 +143,8 @@ class AgentThinkingLoop:
             "thinking_steps": [],
             "next_node": "think",
             "action": None,
-            "response": None
+            "response": None,
+            "loop_count": 0
         }
         print("\n🚀 [Agent Loop] Starting LangGraph Agent Thinking Loop...")
         result = self.graph.invoke(initial_state)
@@ -201,6 +205,25 @@ class AgentThinkingLoop:
         print("\n🧠 [Node: think] Analyzing user request and conversation history...")
         messages = state["messages"]
         thinking_steps = list(state["thinking_steps"])
+        loop_count = state.get("loop_count", 0)
+
+        # ループ回数の上限チェック
+        if loop_count >= self.max_loops:
+            logger.warning(f"Agent thinking loop exceeded maximum iterations ({loop_count}/{self.max_loops}). Halting.")
+            thinking_steps.append({
+                "node": "think",
+                "status": "warning",
+                "message": f"Maximum iteration limit ({self.max_loops}) reached. Execution halted to prevent infinite loop.",
+                "details": {"loop_count": loop_count, "max_loops": self.max_loops}
+            })
+            return {
+                "messages": messages,
+                "thinking_steps": thinking_steps,
+                "next_node": "respond",
+                "action": None,
+                "response": f"推論ループの上限回数（{self.max_loops}回）に達したため、処理を一時中断しました。現在の結果を元に応答します。",
+                "loop_count": loop_count
+            }
 
         # LLMへ送るプロンプトをクリーンにする（巨大な時系列JSONデータの除外）
         sanitized_messages = self._sanitize_messages_for_llm(messages)
@@ -237,7 +260,8 @@ class AgentThinkingLoop:
                 "thinking_steps": thinking_steps,
                 "next_node": "call_tool",
                 "action": action,
-                "response": None
+                "response": None,
+                "loop_count": loop_count + 1
             }
         else:
             # ツール呼び出しが不要な場合、最終回答フェーズへ遷移
@@ -247,7 +271,8 @@ class AgentThinkingLoop:
                 "thinking_steps": thinking_steps,
                 "next_node": "respond",
                 "action": None,
-                "response": llm_response
+                "response": llm_response,
+                "loop_count": loop_count + 1
             }
 
     def _node_execute_tool(self, state: LangGraphAgentState) -> Dict[str, Any]:
