@@ -27,13 +27,13 @@ const ApiClient = {
         return await response.json();
     },
 
-    async sendMessage(sessionId, content) {
+    async sendMessage(sessionId, content, image = null) {
         const response = await fetch(`${API_BASE}/api/sessions/${sessionId}/messages`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ content })
+            body: JSON.stringify({ content, image })
         });
         if (!response.ok) {
             throw new Error(`Failed to send message: ${response.statusText}`);

@@ -16,13 +16,15 @@ from src.shared.domain.value_objects import SessionId
 
 class MessageRequest(BaseModel):
     """クライアントからのメッセージ送信リクエスト"""
-    content: str = Field(..., min_length=1, description="Message content cannot be empty")
+    content: str = Field("", description="Message content")
+    image: Optional[str] = Field(None, description="Base64 encoded image or image URL")
 
 class MessageResponse(BaseModel):
     """個別のメッセージ内容のレスポンス"""
     role: str
     content: str
     timestamp: str
+    image: Optional[str] = None
 
 class SendMessageResponse(BaseModel):
     """メッセージ送信後の全体レスポンス（思考プロセス等を含む）"""
@@ -109,7 +111,7 @@ def send_message(
 
     # ユースケースの実行
     use_case = SendMessageUseCase(repo, brain)#ここでmain.pyで初期化されたリポジトリとエージェントブレインのインスタンスが注入される
-    input_dto = SendMessageInputDTO(content=payload.content, session_id=str(s_id))
+    input_dto = SendMessageInputDTO(content=payload.content, session_id=str(s_id), image=payload.image)
     output_dto = use_case.execute(input_dto)
 
     # DTOからレスポンススキーマに変換して返却
@@ -121,7 +123,8 @@ def send_message(
             MessageResponse(
                 role=msg["role"],
                 content=msg["content"],
-                timestamp=msg["timestamp"]
+                timestamp=msg["timestamp"],
+                image=msg.get("image")
             )
             for msg in output_dto.messages
         ]
@@ -157,7 +160,8 @@ def get_session_messages(
         MessageResponse(
             role=msg.role,
             content=msg.content,
-            timestamp=msg.timestamp.to_iso()
+            timestamp=msg.timestamp.to_iso(),
+            image=getattr(msg, "image", None)
         )
         for msg in session.messages
     ]

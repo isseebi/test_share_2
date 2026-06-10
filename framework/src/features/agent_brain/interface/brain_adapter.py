@@ -17,13 +17,15 @@ class AgentBrainAdapter(AgentBrainService):
         for msg in conversation_history:
             messages_state.append({
                 "role": msg.role,
-                "content": msg.content
+                "content": msg.content,
+                "image": getattr(msg, "image", None)
             })
         
         # Add the new user message
         messages_state.append({
             "role": new_message.role,
-            "content": new_message.content
+            "content": new_message.content,
+            "image": getattr(new_message, "image", None)
         })
 
         # 2. Run the LangGraph agent loop

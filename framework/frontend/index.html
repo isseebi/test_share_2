@@ -18,15 +18,26 @@
 </head>
 
 <body class="dark-theme">
-    <div class="app-container">
+    <!-- Floating Expand Buttons -->
+    <button id="expand-left-btn" class="expand-sidebar-btn" style="display: none;" title="Expand Sidebar">
+        <i class="fa-solid fa-angles-right"></i>
+    </button>
+    <button id="expand-right-btn" class="expand-sidebar-btn" style="display: none;" title="Expand Brain Trace">
+        <i class="fa-solid fa-angles-left"></i>
+    </button>
+
+    <div class="app-container" id="app-container">
 
         <!-- Left Sidebar: Session Management -->
-        <aside class="sidebar-left">
-            <div class="sidebar-header">
+        <aside class="sidebar-left" id="sidebar-left">
+            <div class="sidebar-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                 <div class="app-logo">
                     <i class="fa-solid fa-robot logo-icon"></i>
-                    <span>Servo IA Agent</span>
+                    <span>Servo AI Agent</span>
                 </div>
+                <button id="collapse-left-btn" class="sidebar-toggle-btn" title="Collapse Sidebar">
+                    <i class="fa-solid fa-angles-left"></i>
+                </button>
             </div>
             <button id="new-chat-btn" class="btn btn-primary btn-new-chat">
                 <i class="fa-solid fa-plus"></i> New Chat
@@ -44,8 +55,16 @@
             </div>
         </aside>
 
+        <div class="resizer" id="resizer-left"></div>
+
         <!-- Center Layout: Chat Window -->
-        <main class="chat-main">
+        <main class="chat-main" id="chat-main">
+            <div id="drag-drop-overlay" class="drag-drop-overlay" style="display: none;">
+                <div class="overlay-content">
+                    <i class="fa-solid fa-cloud-arrow-up overlay-icon"></i>
+                    <p>Drop your image here to upload</p>
+                </div>
+            </div>
             <header class="chat-header">
                 <div class="chat-title-info">
                     <h2 id="active-session-title">Select or Create a Chat</h2>
@@ -70,7 +89,19 @@
 
             <footer class="chat-footer">
                 <form id="chat-form" class="chat-form">
+                    <div id="image-preview-container" class="image-preview-container" style="display: none;">
+                        <div class="preview-wrapper">
+                            <img id="image-preview" src="" alt="Upload preview">
+                            <button type="button" id="clear-image-btn" class="clear-image-btn">
+                                <i class="fa-solid fa-circle-xmark"></i>
+                            </button>
+                        </div>
+                    </div>
                     <div class="input-wrapper">
+                        <input type="file" id="image-file-input" accept="image/*" style="display: none;">
+                        <button type="button" id="upload-image-btn" class="upload-btn" disabled>
+                            <i class="fa-solid fa-image"></i>
+                        </button>
                         <input type="text" id="chat-input" placeholder="Ask the agent anything..." autocomplete="off"
                             disabled>
                         <button type="submit" id="send-btn" class="send-btn" disabled>
@@ -81,11 +112,18 @@
             </footer>
         </main>
 
+        <div class="resizer" id="resizer-right"></div>
+
         <!-- Right Sidebar: Agent Brain / LangGraph Node Tracker -->
-        <aside class="sidebar-right">
-            <div class="sidebar-right-header">
-                <h3><i class="fa-solid fa-brain"></i> Agent Brain Trace</h3>
-                <p>LangGraph Execution Steps</p>
+        <aside class="sidebar-right" id="sidebar-right">
+            <div class="sidebar-right-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div>
+                    <h3><i class="fa-solid fa-brain"></i> Agent Brain Trace</h3>
+                    <p>LangGraph Execution Steps</p>
+                </div>
+                <button id="collapse-right-btn" class="sidebar-toggle-btn" title="Collapse Brain Trace">
+                    <i class="fa-solid fa-angles-right"></i>
+                </button>
             </div>
 
             <div id="trace-container" class="trace-container">
@@ -99,6 +137,11 @@
 
     </div>
     <script src="/js/api_client.js?v=2"></script>
+    <script src="/js/trace_renderer.js?v=2"></script>
+    <script src="/js/message_renderer.js?v=2"></script>
+    <script src="/js/session_manager.js?v=2"></script>
+    <script src="/js/input_handler.js?v=2"></script>
+    <script src="/js/layout_manager.js?v=2"></script>
     <script src="/js/main.js?v=2"></script>
 </body>
 

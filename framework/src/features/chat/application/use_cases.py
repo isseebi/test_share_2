@@ -5,9 +5,10 @@ from src.shared.domain.value_objects import SessionId
 
 # DTOs
 class SendMessageInputDTO:
-    def __init__(self, content: str, session_id: Optional[str] = None):
+    def __init__(self, content: str, session_id: Optional[str] = None, image: Optional[str] = None):
         self.content = content
         self.session_id = session_id
+        self.image = image
 
 
 class SendMessageOutputDTO:
@@ -16,6 +17,7 @@ class SendMessageOutputDTO:
         self.response_content = response_content
         self.thinking_steps = thinking_steps
         self.messages = messages
+
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -67,7 +69,7 @@ class SendMessageUseCase:
             session = ChatSession()
 
         # 2. Add user message
-        user_msg = Message(role="user", content=input_dto.content)
+        user_msg = Message(role="user", content=input_dto.content, image=input_dto.image)
         session.add_message(user_msg)
 
         # 3. Call Agent Brain
